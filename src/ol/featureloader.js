@@ -3,6 +3,7 @@ goog.provide('ol.featureloader');
 goog.require('ol');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
+goog.require('ol.source.State');
 
 
 /**
@@ -64,6 +65,9 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
             failure.call(this);
           }
         }.bind(this);
+        xhr.onerror = function(event) {
+            failure.call(this);
+        }.bind(this);
         xhr.send();
       });
 };
@@ -87,5 +91,7 @@ ol.featureloader.xhr = function(url, format) {
        */
       function(features, dataProjection) {
         this.addFeatures(features);
-      }, /* FIXME handle error */ ol.nullFunction);
+      }, function () {
+        this.setState(ol.source.State.ERROR);
+      });
 };
